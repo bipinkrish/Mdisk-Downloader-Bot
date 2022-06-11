@@ -16,7 +16,7 @@ ffmpeg = dirPath + "/ffmpeg/ffmpeg"
 input_video = dirPath + '/vid.mp4'
 input_audio = dirPath + '/aud.m4a'
 
-os.system(f"chmod 777 {ytdlp} {aria2c} {mkvmerge} {ffmpeg} ./ffmpeg/ffprobe ./ffmpeg/qt-faststart")
+os.system(f"chmod 777 {ytdlp} {aria2c} {mkvmerge} {ffmpeg} ffmpeg/ffprobe ffmpeg/qt-faststart")
 
 def req(link):
     inp = link #input('Enter the Link: ')
