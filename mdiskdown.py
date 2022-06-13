@@ -2,6 +2,7 @@ from pyrogram import Client
 from pyrogram import filters
 import os
 import mdisk
+import split
 
 bot_token = os.environ.get("TOKEN", "") 
 api_hash = os.environ.get("HASH", "") 
@@ -11,6 +12,7 @@ app = Client("my_bot",api_id=api_id, api_hash=api_hash,bot_token=bot_token)
 
 global mess,sta,linkk
 sta = False
+TG_SPLIT_SIZE = 2097151000
 
 @app.on_message(filters.command(["start"]))
 async def echo(client, message):
@@ -24,9 +26,19 @@ async def down(v,a):
     global linkk, mess
     await app.send_message(mess.chat.id, 'downloading')
     file = mdisk.mdow(linkk,v,a)
-    await app.send_message(mess.chat.id, 'uploading')
-    await app.send_document(chat_id=623741973,document=file)#, progress=progress)
-    os.remove(file)
+    size = split.get_path_size(file)
+    if(size > 2097151000):
+        await app.send_message(mess.chat.id, 'spliting')
+        flist = split.split_file(file,size,file,".", TG_SPLIT_SIZE)
+        os.remove(file)
+        await app.send_message(mess.chat.id, 'uploading')
+        for ele in flist:
+            await app.send_document(chat_id=623741973,document=ele)#, progress=progress)
+            os.remove(ele)
+    else:
+        await app.send_message(mess.chat.id, 'uploading')
+        await app.send_document(chat_id=623741973,document=file)#, progress=progress)
+        os.remove(file)
 
 
 @app.on_message(filters.command(["mdisk"]))
