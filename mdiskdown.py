@@ -3,7 +3,6 @@ from pyrogram import filters
 import os
 import mdisk
 import split
-import linecache
 
 bot_token = os.environ.get("TOKEN", "") 
 api_hash = os.environ.get("HASH", "") 
@@ -54,7 +53,9 @@ async def echo(client, message):
 @app.on_message()
 async def echo(client, message):
     if os.path.exists(f"{message.chat.id}.txt"):
-        link = linecache.getline(f"{message.chat.id}.txt", 1)
+        with open(f"{message.chat.id}.txt","r") as li:
+            link = li.read()
+        link = link.split("\n")[0]    
         ids = message.text.split(",")
         await down(ids[0],ids[1],message,link)
     else:
