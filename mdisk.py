@@ -112,7 +112,6 @@ def mdow(link,v,a,message):
     #renaming
     output = requests.get(url=URL, headers=header).json()['filename']
     output = output.replace(".mkv", "").replace(".mp4", "")
-    output = f'Downlods/{message.id}/{output}'
 
     #merge
     #mkvmerge_command = [mkvmerge, '--output', output + '.mkv', '--language', '0:und', '--default-track', '0:yes', '--compression', '0:none', input_video,'--language', '0:en', '--default-track', '0:yes', '--compression', '0:none', input_audio]
