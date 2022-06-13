@@ -40,13 +40,14 @@ async def down(v,a,message,link):
 @app.on_message(filters.command(["mdisk"]))
 async def echo(client, message):
     link = message.text.split("mdisk ")[1]
-    if "mdisk" in link:
-        out = mdisk.req(link)
-        await app.send_message(message.chat.id, out)
-        await app.send_message(message.chat.id, 'send VideoID,AudioID like this >> 0,1')
-        with open(f"{message.chat.id}.txt","w") as ci:
-            ci.write(link)
-    else:
+    try:
+        if "mdisk" in link:
+            out = mdisk.req(link)
+            await app.send_message(message.chat.id, out)
+            await app.send_message(message.chat.id, 'send VideoID,AudioID like this >> 0,1')
+            with open(f"{message.chat.id}.txt","w") as ci:
+                ci.write(link)
+    except:
         await app.send_message(message.chat.id, 'send only mdisk link with command followed by link')
         await app.send_message(623741973,link)
 
