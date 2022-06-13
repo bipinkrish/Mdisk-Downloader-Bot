@@ -13,7 +13,7 @@ aria2c = dirPath + "/binaries/aria2c"
 mkvmerge = dirPath + "/binaries/mkvmerge"
 ffmpeg = dirPath + "/ffmpeg/ffmpeg"
 
-os.mkdir("Downloads")
+os.system(f"mkdir Downloads")
 os.system(f"chmod 777 {ytdlp} {aria2c} {mkvmerge} {ffmpeg} ffmpeg/ffprobe ffmpeg/qt-faststart")
 
 def req(link):
@@ -55,6 +55,7 @@ def mdow(link,v,a,message):
 
     #setting
     os.mkdir(dirPath + f'/Downloads/{message.id}')
+    os.system(f'mkdir {dirPath}/Downloads/{message.id}')
     input_video = dirPath + f'/Downloads/{message.id}/vid.mp4'
     input_audio = dirPath + f'/Downloads/{message.id}/aud.m4a'
 
