@@ -1,6 +1,6 @@
 # mdisk-downloader-telegram-bot
 
-can watch withut mx player
+can watch videos without mx player
 
 Env variable - TOKEN ->> Bot API Token  
                ID ->> API ID
