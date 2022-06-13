@@ -53,7 +53,7 @@ def req(link):
 def mdow(link,v,a,message):
 
     #setting
-    os.system(f'mkdir {dirPath}/Downloads/{message.id}')
+    os.system(f'mkdir Downloads/{message.id}')
     input_video = dirPath + f'/Downloads/{message.id}/vid.mp4'
     input_audio = dirPath + f'/Downloads/{message.id}/aud.m4a'
 
