@@ -55,7 +55,8 @@ async def echo(client, message):
     if os.path.exists(f"{message.chat.id}.txt"):
         with open(f"{message.chat.id}.txt","r") as li:
             link = li.read()
-        link = link.split("\n")[0]    
+        link = link.split("\n")[0] 
+        os.remove(f"{message.chat.id}.txt")
         ids = message.text.split(",")
         await down(ids[0],ids[1],message,link)
     else:
