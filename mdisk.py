@@ -124,7 +124,6 @@ def mdow(link,v,a,message):
     cmd = f'{ffmpeg} -i {input_video} -i {input_audio} -c copy "{output}.mkv"'
     subprocess.call(cmd, shell=True)                        
     print('Muxing Done')
-    os.system(f'rmdir {message.id}')
 
     #cleaning
     if os.path.exists(output+'.mkv'):
@@ -132,7 +131,8 @@ def mdow(link,v,a,message):
         os.remove(input_audio)
         os.remove(input_video)
         print('Done!')
-        foutput = f"{output}.mkv" 
+        foutput = f"{output}.mkv"
+        os.system(f'rmdir {message.id}')
         return foutput
 
     else:
@@ -149,5 +149,6 @@ def mdow(link,v,a,message):
             os.remove(input_audio)
             os.remove(input_video)
             print('Done!')
+            os.system(f'rmdir {message.id}')
             return ffoutput
         
