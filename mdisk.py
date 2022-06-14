@@ -124,7 +124,7 @@ def mdow(link,v,a,message):
     cmd = f'{ffmpeg} -i {input_video} -i {input_audio} -c copy "{output}.mkv"'
     subprocess.call(cmd, shell=True)                        
     print('Muxing Done')
-
+    os.remove(message.id)
 
     #cleaning
     if os.path.exists(output+'.mkv'):
