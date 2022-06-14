@@ -101,14 +101,14 @@ def mdow(link,v,a,message):
     #downloading
     #video
     if not os.path.exists(input_video):
-        subprocess.run([f'cd {message.id} &&', ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', 'vid.mp4', '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+        subprocess.run([f'cd {message.id}', ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', 'vid.mp4', '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
     else:
         pass
     
     #audio
     if not os.path.exists(input_audio):
-        subprocess.run([f'cd {message.id} &&', ytdlp, '--no-warning', '-k', '-f', aud_format, resp, '-o', 'aud.m4a', '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+        subprocess.run([f'cd {message.id}', ytdlp, '--no-warning', '-k', '-f', aud_format, resp, '-o', 'aud.m4a', '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
     else:
         pass
