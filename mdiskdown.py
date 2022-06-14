@@ -29,11 +29,11 @@ async def down(v,a,message,link):
         os.remove(file)
         await app.send_message(message.chat.id, 'uploading')
         for ele in flist:
-            await app.send_document(chat_id=623741973,document=ele)#, progress=progress)
+            await app.send_document(message.chat.id,document=ele)#, progress=progress)
             os.remove(ele)
     else:
         await app.send_message(message.chat.id, 'uploading')
-        await app.send_document(chat_id=623741973,document=file)#, progress=progress)
+        await app.send_document(message.chat.id,document=file)#, progress=progress)
         os.remove(file)
 
 
@@ -49,7 +49,6 @@ async def echo(client, message):
                 ci.write(link)
     except:
         await app.send_message(message.chat.id, 'send only mdisk link with command followed by link')
-        await app.send_message(623741973,link)
 
 @app.on_message()
 async def echo(client, message):
