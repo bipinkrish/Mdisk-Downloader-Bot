@@ -28,8 +28,10 @@ async def down(v,a,message,link):
         flist = split.split_file(file,size,file,".", TG_SPLIT_SIZE)
         os.remove(file)
         await app.send_message(message.chat.id, 'uploading')
+        i = 1
         for ele in flist:
-            await app.send_document(message.chat.id,document=ele)#, progress=progress)
+            await app.send_document(message.chat.id,document=ele,caption=f"part {i}")#, progress=progress)
+            i = i + 1
             os.remove(ele)
     else:
         await app.send_message(message.chat.id, 'uploading')
