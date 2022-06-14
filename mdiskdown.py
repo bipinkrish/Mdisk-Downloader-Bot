@@ -39,8 +39,8 @@ async def down(v,a,message,link):
 
 @app.on_message(filters.command(["mdisk"]))
 async def echo(client, message):
-    link = message.text.split("mdisk ")[1]
     try:
+        link = message.text.split("mdisk ")[1]
         if "mdisk" in link:
             out = mdisk.req(link)
             await app.send_message(message.chat.id, out)
