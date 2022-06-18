@@ -62,7 +62,7 @@ async def echo(client, message):
         os.remove(f"{message.chat.id}.txt")
         ids = message.text.split(",")
         d = threading.Thread(target=lambda:down(ids[0],ids[1],message,link),daemon=True)
-        d.start()
+        await d.start()
         #await down(ids[0],ids[1],message,link)
     else:
         await app.send_message(message.chat.id, "first send me link with /mdisk")
