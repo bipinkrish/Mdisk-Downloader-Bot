@@ -10,5 +10,5 @@ ID - API ID
 
 HASH - API Hash
 
-#Deploy
+
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/D6ueVa?referralCode=_4oAwx)
