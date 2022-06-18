@@ -54,7 +54,7 @@ async def echo(client, message):
         await app.send_message(message.chat.id, 'send only mdisk link with command followed by link')
 
 @app.on_message()
-async def echo(client, message):
+def echo(client, message):
     if os.path.exists(f"{message.chat.id}.txt"):
         with open(f"{message.chat.id}.txt","r") as li:
             link = li.read()
@@ -62,9 +62,9 @@ async def echo(client, message):
         os.remove(f"{message.chat.id}.txt")
         ids = message.text.split(",")
         d = threading.Thread(target=lambda:down(ids[0],ids[1],message,link),daemon=True)
-        await d.start()
+        d.start()
         #await down(ids[0],ids[1],message,link)
     else:
-        await app.send_message(message.chat.id, "first send me link with /mdisk")
+        app.send_message(message.chat.id, "first send me link with /mdisk")
 
 app.run()    
