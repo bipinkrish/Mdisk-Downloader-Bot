@@ -2,6 +2,8 @@
 
 You can watch videos without mx player (bypass mdisk requirements)
 
+inspired from https://github.com/death-angel-141/Mdisk-Downloader
+
 # Env variables
 
 TOKEN - Bot API Token
