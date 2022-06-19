@@ -2,7 +2,7 @@
 
 You can watch videos without mx player (bypass mdisk requirements)
 
-#Env variables
+# Env variables
 
 TOKEN - Bot API Token
 
