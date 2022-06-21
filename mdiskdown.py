@@ -53,7 +53,7 @@ def echo(client, message):
     except:
         app.send_message(message.chat.id, 'send only mdisk link with command followed by link')
 
-@app.on_message()
+@app.on_message(filters.text)
 def echo(client, message):
     if os.path.exists(f"{message.chat.id}.txt"):
         with open(f"{message.chat.id}.txt","r") as li:
