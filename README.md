@@ -18,7 +18,9 @@ HASH - API Hash
 /mdisk mdisklink
 ```
 
-bot will reply you with avaialbe IDs for Video and Audio, and asks for your input which is your required VideoID,AudioID
+Bot will reply you with avaialbe IDs for Video and Audio, 
+
+and asks for your input which is your required VideoID,AudioID
 
 # Deploy
 
