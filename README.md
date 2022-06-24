@@ -14,9 +14,9 @@ HASH - API Hash
 
 # Usage
 
-`
+```
 /mdisk mdisklink
-`
+```
 
 bot will reply you with avaialbe IDs for Video and Audio, and asks for your input which is your required VideoID,AudioID
 
