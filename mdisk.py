@@ -77,24 +77,10 @@ def mdow(link,v,a,message):
 
     #requesting
     resp = requests.get(url=URL, headers=header).json()['source']
-    #result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
-    #outtext = result.stdout
-    #print(outtext)
-
-    #printingrequiredonly
-    #outtext = outtext.split("-")
-    #temp = outtext[0]
-    #temp = temp.split("\n")
-    #temp =  temp[-2]
-    #outtext = outtext[-1]
-    #outtext = temp + outtext
-    #print (outtext)
-
 
     #choosing
-    vid_format = v #input('Enter Video Format ID: ')
-    aud_format = a #input('Enter Audio Format ID: ')
-
+    vid_format = v
+    aud_format = a 
 
     #downloading
     #video
@@ -115,10 +101,12 @@ def mdow(link,v,a,message):
     output = requests.get(url=URL, headers=header).json()['filename']
     output = output.replace(".mkv", "").replace(".mp4", "")
 
-    #merge
-    #mkvmerge_command = [mkvmerge, '--output', output + '.mkv', '--language', '0:und', '--default-track', '0:yes', '--compression', '0:none', input_video,'--language', '0:en', '--default-track', '0:yes', '--compression', '0:none', input_audio]
+   
+    #mkvmerge not used
+    #mkvmerge_command = [mkvmerge, '--appimage-extract-and-run', '--output', output + '.mkv', '--language', '0:und', '--default-track', '0:yes', '--compression', '0:none', input_video,'--language', '0:en', '--default-track', '0:yes', '--compression', '0:none', input_audio]
     #subprocess.run(mkvmerge_command)
-
+    
+    #merge
     cmd = f'{ffmpeg} -i {input_video} -i {input_audio} -c copy "{output}.mkv"'
     subprocess.call(cmd, shell=True)                        
     print('Muxing Done')
@@ -136,8 +124,11 @@ def mdow(link,v,a,message):
     else:
         print("Trying with Changes")
         ffoutput = f" {output}.mkv"
-        #mkvmerge_command = f'{mkvmerge} --output "{ffoutput}" --language 0:und --default-track 0:yes --compression 0:none {input_video} --language 0:en --default-track 0:yes --compression 0:none {input_audio}'
+        
+        #mkvmerge not used
+        #mkvmerge_command = f'{mkvmerge} --appimage-extract-and-run --output "{ffoutput}" --language 0:und --default-track 0:yes --compression 0:none {input_video} --language 0:en --default-track 0:yes --compression 0:none {input_audio}'
         #os.system(mkvmerge_command)
+        
         cmd = f'{ffmpeg} -i {input_video} -i {input_audio} -c copy "{ffoutput}"'
         subprocess.call(cmd, shell=True)
         print('Muxing Done')
