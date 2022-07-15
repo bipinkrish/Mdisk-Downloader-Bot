@@ -1,16 +1,18 @@
-# Mdisk-Downloader-Telegram-Bot
+# Mdisk Downloader Bot
 
-You can watch videos without mx player (bypass mdisk requirements)
+A telegram MDisk Video Downloader Bot, You can watch Videos without MX player (bypass mdisk requirements)
 
 inspired from https://github.com/death-angel-141/Mdisk-Downloader
 
-# Env variables
+---
 
-TOKEN - Bot API Token
+## Variables
 
-ID - API ID
+- `API_HASH` Your API Hash from my.telegram.org
+- `API_ID` Your API ID from my.telegram.org
+- `BOT_TOKEN` Your bot token from @BotFather
 
-HASH - API Hash
+---
 
 # Usage
 
@@ -25,4 +27,3 @@ and asks for your input which is your required VideoID,AudioID
 # Deploy
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/D6ueVa?referralCode=_4oAwx)
-
