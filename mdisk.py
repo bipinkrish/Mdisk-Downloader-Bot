@@ -10,7 +10,6 @@ dirPath = os.path.dirname(realPath)
 dirName = os.path.basename(dirPath)
 ytdlp = dirPath + "/binaries/yt-dlp"
 aria2c = dirPath + "/binaries/aria2c"
-mkvmerge = dirPath + "/binaries/mkvmerge"
 ffmpeg = dirPath + "/ffmpeg/ffmpeg"
 
 os.system(f"chmod 777 {ytdlp} {aria2c} {mkvmerge} {ffmpeg} ffmpeg/ffprobe ffmpeg/qt-faststart")
