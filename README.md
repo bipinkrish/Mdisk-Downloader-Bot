@@ -28,4 +28,7 @@ and asks for your input which is your required VideoID,AudioID
 
 # Deploy
 
+You can use the bot locally by running 'main.py' or deploy using Profile, Dokerfile, docker-compose.yml
+
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/D6ueVa?referralCode=_4oAwx)
+
