@@ -15,7 +15,7 @@ TG_SPLIT_SIZE = 2097151000
 
 @app.on_message(filters.command(["start"]))
 def echo(client, message):
-    app.send_message(message.chat.id, 'Send me the mdisk link like this >> /mdisk link')
+    app.send_message(message.chat.id, 'Send link like this >> /mdisk link')
 
 '''async def progress(current, total):
     await app.send_message(message.chat.id,f"{current * 100 / total:.1f}%")'''
@@ -65,6 +65,6 @@ def echo(client, message):
         d.start()
         #await down(ids[0],ids[1],message,link)
     else:
-        app.send_message(message.chat.id, "first send me link with /mdisk")
+        app.send_message(message.chat.id, "first send me link /mdisk")
 
 app.run()    
