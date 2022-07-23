@@ -118,8 +118,8 @@ def mdow(link,v,a,message):
             os.system(f'rmdir {message.id}')
             return ffoutput
     
-# threding audio download      
-def downaud(input_audio,aud_format,resp)
+# threding audio download
+def downaud(input_audio,aud_format,resp):
     if not os.path.exists(input_audio):
         subprocess.run([ytdlp, '--no-warning', '-k', '-f', aud_format, resp, '-o', input_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
