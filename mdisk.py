@@ -12,10 +12,10 @@ ytdlp = dirPath + "/binaries/yt-dlp"
 aria2c = dirPath + "/binaries/aria2c"
 ffmpeg = dirPath + "/ffmpeg/ffmpeg"
 
-os.system(f"chmod 777 {ytdlp} {aria2c} {mkvmerge} {ffmpeg} ffmpeg/ffprobe ffmpeg/qt-faststart")
+os.system(f"chmod 777 {ytdlp} {aria2c} {ffmpeg} ffmpeg/ffprobe ffmpeg/qt-faststart")
 
 def req(link):
-    inp = link #input('Enter the Link: ')
+    inp = link 
     fxl = inp.split("/")
     cid = fxl[-1]
 
@@ -57,7 +57,7 @@ def mdow(link,v,a,message):
     input_audio = dirPath + f'/{message.id}/aud.m4a'
 
     #input
-    inp = link #input('Enter the Link: ')
+    inp = link 
     fxl = inp.split("/")
     cid = fxl[-1]
 
