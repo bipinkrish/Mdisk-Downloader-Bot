@@ -115,11 +115,11 @@ def mdow(link,message):
         for ele in audids:
                 out_audio = input_audio + f'/aud-{ele}.m4a'
                 os.remove(out_audio)
-        os.rmdir(input_audio)
+        #os.rmdir(input_audio)
         os.remove(input_video)
         print('Done!')
         foutput = f"{output}.mkv"
-        os.system(f'rmdir {message.id}')
+        os.system(f'rm -rf {message.id}')
         return foutput
 
     else:
