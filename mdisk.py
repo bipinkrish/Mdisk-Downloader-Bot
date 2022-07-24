@@ -67,13 +67,10 @@ def mdow(link,message):
                 i = i + 1
         if "video" in line:
             vid_format = line[0]
-
-    # audio download   
-    for ele in audids:
-        out_audio = input_audio + f'/aud-{ele}.m4a'
-        subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
-                   '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
-    print("Audio/s Downloaded")    
+       
+    # threding audio download   
+    audi = threading.Thread(target=lambda:downaud(input_audio,audids,resp),daemon=True)
+    audi.start()    
 
     # video download
     subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
@@ -85,6 +82,7 @@ def mdow(link,message):
     output = output.replace(".mkv", "").replace(".mp4", "")
     
     # merge
+    audi.join()
     cmd = f'{ffmpeg} -i "{input_video}" '
 
     len = 0
@@ -112,35 +110,25 @@ def mdow(link,message):
     # cleaning
     if os.path.exists(output+'.mkv'):
         print('Cleaning Leftovers...')
-        for ele in audids:
-                out_audio = input_audio + f'/aud-{ele}.m4a'
-                os.remove(out_audio)
-        #os.rmdir(input_audio)
-        os.remove(input_video)
-        print('Done!')
-        foutput = f"{output}.mkv"
         os.system(f'rm -rf {message.id}')
         return foutput
 
     else:
         print("Trying with Changes")
         ffoutput = f" {output}.mkv"
-        
-        
         cmd = f'{tcmd} -c copy "{ffoutput}"'
         subprocess.call(cmd, shell=True)
         print('Muxing Done')
         
         if os.path.exists(output+'.mkv'):
             print('Cleaning Leftovers...')
-            for ele in audids:
-                out_audio = input_audio + f'/aud-{ele}.m4a'
-                os.remove(out_audio)
-            os.rmdir(input_audio)
-            os.remove(input_video)
-            print('Done!')
-            os.system(f'rmdir {message.id}')
+            
+            os.system(f'rm -rf {message.id}')
             return ffoutput
     
-
-       
+# threding audio download      
+def downaud(input_audio,audids,resp):
+    for ele in audids:
+        out_audio = input_audio + f'/aud-{ele}.m4a'
+        subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+                   '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
