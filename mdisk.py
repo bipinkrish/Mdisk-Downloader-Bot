@@ -68,9 +68,11 @@ def mdow(link,message):
         if "video" in line:
             vid_format = line[0]
 
-    # threding audio download   
-    audi = threading.Thread(target=lambda:downaud(input_audio,audids,resp),daemon=True)
-    audi.start()
+    # audio download   
+    for ele in audids:
+        out_audio = input_audio + f'/aud-{ele}.m4a'
+        subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+                   '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
     
     # video download
     subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
@@ -81,7 +83,6 @@ def mdow(link,message):
     output = output.replace(".mkv", "").replace(".mp4", "")
     
     # merge
-    audi.join()
     cmd = f'{ffmpeg} -i "{input_video}" '
 
     len = 0
@@ -97,10 +98,11 @@ def mdow(link,message):
 
     i = 1
     for ele in audname:
-        cmd = cmd + f'-metadata:s:a:{i} language={ele} '
+        cmd = cmd + f'-metadata:s:a:{i} language="{ele}" '
 
     tcmd = cmd    
     cmd = cmd + f'-c copy "{output}.mkv"'
+    print(cmd)
     subprocess.call(cmd, shell=True)                        
     print('Muxing Done')
 
@@ -131,10 +133,5 @@ def mdow(link,message):
             os.system(f'rmdir {message.id}')
             return ffoutput
     
-# threding audio download      
-def downaud(input_audio,audids,resp):
-    for ele in audids:
-        out_audio = input_audio + f'/aud-{ele}.m4a'
-        subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
-                   '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
+
        
