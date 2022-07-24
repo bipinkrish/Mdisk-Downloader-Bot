@@ -73,28 +73,34 @@ def mdow(link,message):
         out_audio = input_audio + f'/aud-{ele}.m4a'
         subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
-    
+    print("Audio/s Downloaded")    
+
     # video download
     subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
-  
+    
+    print("Video Downloaded")
     # renaming
     output = requests.get(url=URL, headers=header).json()['filename']
     output = output.replace(".mkv", "").replace(".mp4", "")
     
     # merge
     cmd = f'{ffmpeg} -i "{input_video}" '
+    print(cmd)
 
     len = 0
     for ele in audids:
         out_audio = input_audio + f'/aud-{ele}.m4a'
         cmd = cmd + f'-i "{out_audio}" '
+        print(cmd)
         len = len + 1
-
+    
     cmd = cmd + "-map 0 "
     i = 1
     while(i<=len):
         cmd = cmd + f"-map {i} "
+        i = i + 1
+        print(cmd)
 
     i = 1
     for ele in audname:
