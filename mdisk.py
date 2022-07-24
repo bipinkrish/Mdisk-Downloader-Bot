@@ -25,38 +25,13 @@ header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
     	 }
 
-# IDs request function
-def req(link):
-    inp = link 
-    fxl = inp.split("/")
-    cid = fxl[-1]
-
-    URL = f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={cid}'
-
-    # requesting
-    print("Requesting to Server")
-    resp = requests.get(url=URL, headers=header).json()['source']
-    result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
-    outtext = result.stdout
-    #print(outtext)
-
-    # printing required only
-    outtext = outtext.split("-")
-    temp = outtext[0]
-    temp = temp.split("\n")
-    temp =  temp[-2]
-    outtext = outtext[-1]
-    outtext = f"{temp}\n{outtext}"
-    print (outtext)
-    return outtext
-
 # actual function
-def mdow(link,v,a,message):
+def mdow(link,message):
 
     #setting
     os.system(f"mkdir {message.id}")
     input_video = dirPath + f'/{message.id}/vid.mp4'
-    input_audio = dirPath + f'/{message.id}/aud.m4a'
+    input_audio = dirPath + f'/{message.id}' 
 
     #input
     inp = link 
@@ -66,28 +41,66 @@ def mdow(link,v,a,message):
     # resp capturing
     URL = f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={cid}'
     resp = requests.get(url=URL, headers=header).json()['source']
+    result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
+    with open(f"{message.id}.txt","w") as temp:
+        temp.write(result.stdout)
+    os.system(f"sed -i 1,6d {message.id}.txt")
 
-    #choosing
-    vid_format = v
-    aud_format = a 
+    # getting ids
+    with open(f"{message.id}.txt", 'r') as file1:
+        Lines = file1.readlines()
+    
+    os.remove(f"{message.id}.txt")
+    audids = []
+    audname = []
+    i = 1
+
+    for line in Lines:
+        line = line.strip()
+        if "audio" in line:
+            audids.append(line[0])
+            if "[" in line and "]" in line:
+                audname.append(line.split("[")[1].split("]")[0])
+                i = i + 1
+            else:
+                audname.append(f"Track - {i}")
+                i = i + 1
+        if "video" in line:
+            vid_format = line[0]
 
     # threding audio download   
-    audi = threading.Thread(target=lambda:downaud(input_audio,aud_format,resp),daemon=True)
+    audi = threading.Thread(target=lambda:downaud(input_audio,audids,resp),daemon=True)
     audi.start()
     
     # video download
-    if not os.path.exists(input_video):
-        subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+    subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
-    else:
-        pass
-
+  
     # renaming
     output = requests.get(url=URL, headers=header).json()['filename']
     output = output.replace(".mkv", "").replace(".mp4", "")
     
     # merge
-    cmd = f'{ffmpeg} -i {input_video} -i {input_audio} -c copy "{output}.mkv"'
+    audi.join()
+    cmd = f'{ffmpeg} -i "{input_video}" '
+
+    len = 0
+    for ele in audids:
+        out_audio = input_audio + f'/aud-{ele}.m4a'
+        cmd = cmd + f'-i "{out_audio}" '
+        len = len + 1
+
+    cmd = cmd + "-map 0 "
+    i = 1
+    while(i<=len):
+        cmd = cmd + f"-map {i} "
+
+    i = 1
+    for ele in audname:
+        cmd = cmd + f'-metadata:s:a:{i} language={ele} '
+
+    tcmd = cmd    
+    cmd = cmd + f'-c copy "{output}.mkv"'
     subprocess.call(cmd, shell=True)                        
     print('Muxing Done')
 
@@ -106,7 +119,7 @@ def mdow(link,v,a,message):
         ffoutput = f" {output}.mkv"
         
         
-        cmd = f'{ffmpeg} -i {input_video} -i {input_audio} -c copy "{ffoutput}"'
+        cmd = f'{tcmd} -c copy "{ffoutput}"'
         subprocess.call(cmd, shell=True)
         print('Muxing Done')
         
@@ -118,10 +131,10 @@ def mdow(link,v,a,message):
             os.system(f'rmdir {message.id}')
             return ffoutput
     
-# threding audio download
-def downaud(input_audio,aud_format,resp):
-    if not os.path.exists(input_audio):
-        subprocess.run([ytdlp, '--no-warning', '-k', '-f', aud_format, resp, '-o', input_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+# threding audio download      
+def downaud(input_audio,audids,resp):
+    for ele in audids:
+        out_audio = input_audio + f'/aud-{ele}.m4a'
+        subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
-    else:
-        pass        
+       

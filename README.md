@@ -20,10 +20,6 @@ inspired from https://github.com/death-angel-141/Mdisk-Downloader
 /mdisk mdisklink
 ```
 
-Bot will reply you with avaialbe IDs for Video and Audio, 
-
-and asks for your input which is your required VideoID,AudioID
-
 ---
 
 # Deploy

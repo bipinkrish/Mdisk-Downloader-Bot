@@ -17,12 +17,9 @@ TG_SPLIT_SIZE = 2097151000
 def echo(client, message):
     app.send_message(message.chat.id, 'Send link like this >> /mdisk link')
 
-'''async def progress(current, total):
-    await app.send_message(message.chat.id,f"{current * 100 / total:.1f}%")'''
-
-def down(v,a,message,link):
+def down(message,link):
     app.send_message(message.chat.id, 'downloading')
-    file = mdisk.mdow(link,v,a,message)
+    file = mdisk.mdow(link,message)
     size = split.get_path_size(file)
     if(size > 2097151000):
         app.send_message(message.chat.id, 'spliting')
@@ -45,25 +42,9 @@ def echo(client, message):
     try:
         link = message.text.split("mdisk ")[1]
         if "mdisk" in link:
-            out = mdisk.req(link)
-            app.send_message(message.chat.id, out)
-            app.send_message(message.chat.id, 'send VideoID,AudioID like this >> 0,1')
-            with open(f"{message.chat.id}.txt","w") as ci:
-                ci.write(link)
+            d = threading.Thread(target=lambda:down(message,link),daemon=True)
+            d.start()
     except:
         app.send_message(message.chat.id, 'send only mdisk link with command followed by link')
-
-@app.on_message(filters.text)
-def echo(client, message):
-    if os.path.exists(f"{message.chat.id}.txt"):
-        with open(f"{message.chat.id}.txt","r") as li:
-            link = li.read()
-        link = link.split("\n")[0] 
-        os.remove(f"{message.chat.id}.txt")
-        ids = message.text.split(",")
-        d = threading.Thread(target=lambda:down(ids[0],ids[1],message,link),daemon=True)
-        d.start()
-    else:
-        app.send_message(message.chat.id, "first send me link /mdisk")
 
 app.run()    
