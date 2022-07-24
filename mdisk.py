@@ -115,7 +115,7 @@ def mdow(link,message):
         for ele in audids:
                 out_audio = input_audio + f'/aud-{ele}.m4a'
                 os.remove(out_audio)
-        os.remove(input_audio)
+        os.rmdir(input_audio)
         os.remove(input_video)
         print('Done!')
         foutput = f"{output}.mkv"
@@ -133,7 +133,10 @@ def mdow(link,message):
         
         if os.path.exists(output+'.mkv'):
             print('Cleaning Leftovers...')
-            os.remove(input_audio)
+            for ele in audids:
+                out_audio = input_audio + f'/aud-{ele}.m4a'
+                os.remove(out_audio)
+            os.rmdir(input_audio)
             os.remove(input_video)
             print('Done!')
             os.system(f'rmdir {message.id}')
