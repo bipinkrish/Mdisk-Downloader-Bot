@@ -111,6 +111,7 @@ def mdow(link,message):
     if os.path.exists(output+'.mkv'):
         print('Cleaning Leftovers...')
         os.system(f'rm -rf {message.id}')
+        foutput = f"{output}.mkv"
         return foutput
 
     else:
