@@ -86,13 +86,11 @@ def mdow(link,message):
     
     # merge
     cmd = f'{ffmpeg} -i "{input_video}" '
-    print(cmd)
 
     len = 0
     for ele in audids:
         out_audio = input_audio + f'/aud-{ele}.m4a'
         cmd = cmd + f'-i "{out_audio}" '
-        print(cmd)
         len = len + 1
     
     cmd = cmd + "-map 0 "
@@ -100,7 +98,6 @@ def mdow(link,message):
     while(i<=len):
         cmd = cmd + f"-map {i} "
         i = i + 1
-        print(cmd)
 
     i = 1
     for ele in audname:
@@ -115,6 +112,9 @@ def mdow(link,message):
     # cleaning
     if os.path.exists(output+'.mkv'):
         print('Cleaning Leftovers...')
+        for ele in audids:
+                out_audio = input_audio + f'/aud-{ele}.m4a'
+                os.remove(out_audio)
         os.remove(input_audio)
         os.remove(input_video)
         print('Done!')
