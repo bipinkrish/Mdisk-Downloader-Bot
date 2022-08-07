@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import threading
+import shutil
 
 # setting
 currentFile = __file__
@@ -29,7 +30,7 @@ header = {
 def mdow(link,message):
 
     #setting
-    os.system(f"mkdir {message.id}")
+    os.mkdir(str(message.id))
     input_video = dirPath + f'/{message.id}/vid.mp4'
     input_audio = dirPath + f'/{message.id}' 
 
@@ -54,6 +55,7 @@ def mdow(link,message):
     audids = []
     audname = []
     i = 1
+    vid_format = str(0)
 
     for line in Lines:
         line = line.strip()
@@ -110,7 +112,7 @@ def mdow(link,message):
     # cleaning
     if os.path.exists(output+'.mkv'):
         print('Cleaning Leftovers...')
-        os.system(f'rm -rf {message.id}')
+        shutil.rmtree(str(message.id))
         foutput = f"{output}.mkv"
         return foutput
 
@@ -124,7 +126,7 @@ def mdow(link,message):
         if os.path.exists(output+'.mkv'):
             print('Cleaning Leftovers...')
             
-            os.system(f'rm -rf {message.id}')
+            shutil.rmtree(str(message.id))
             return ffoutput
     
 # threding audio download      
