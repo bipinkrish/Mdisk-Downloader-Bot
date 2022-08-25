@@ -44,6 +44,7 @@ def mdow(link,message):
     try:
         resp = requests.get(url=URL, headers=header).json()['source']
     except:
+        shutil.rmtree(str(message.id))
         return None,None
     result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
     with open(f"{message.id}.txt","w") as temp:
