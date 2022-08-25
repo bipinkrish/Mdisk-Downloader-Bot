@@ -41,7 +41,10 @@ def mdow(link,message):
 
     # resp capturing
     URL = f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={cid}'
-    resp = requests.get(url=URL, headers=header).json()['source']
+    try:
+        resp = requests.get(url=URL, headers=header).json()['source']
+    except:
+        return None,None
     result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
     with open(f"{message.id}.txt","w") as temp:
         temp.write(result.stdout)
@@ -83,19 +86,26 @@ def mdow(link,message):
     output = requests.get(url=URL, headers=header).json()['filename']
     output = output.replace(".mkv", "").replace(".mp4", "")
     
+    # check if normal video
+    if len(audids) == 0:
+        foutput = f"{output}.mkv"
+        os.rename(input_video,foutput)
+        shutil.rmtree(str(message.id))
+        return foutput,0
+
     # merge
     audi.join()
     cmd = f'{ffmpeg} -i "{input_video}" '
 
-    len = 0
+    leng = 0
     for ele in audids:
         out_audio = input_audio + f'/aud-{ele}.m4a'
         cmd = cmd + f'-i "{out_audio}" '
-        len = len + 1
+        leng = leng + 1
     
     cmd = cmd + "-map 0 "
     i = 1
-    while(i<=len):
+    while(i<=leng):
         cmd = cmd + f"-map {i} "
         i = i + 1
 
@@ -114,7 +124,7 @@ def mdow(link,message):
         print('Cleaning Leftovers...')
         shutil.rmtree(str(message.id))
         foutput = f"{output}.mkv"
-        return foutput
+        return foutput,1
 
     else:
         print("Trying with Changes")
@@ -127,7 +137,7 @@ def mdow(link,message):
             print('Cleaning Leftovers...')
             
             shutil.rmtree(str(message.id))
-            return ffoutput
+            return ffoutput,1
     
 # threding audio download      
 def downaud(input_audio,audids,resp):

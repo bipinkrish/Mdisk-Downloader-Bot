@@ -19,7 +19,7 @@ api_id = os.environ.get("ID", "")
 app = Client("my_bot",api_id=api_id, api_hash=api_hash,bot_token=bot_token)
 
 
-# satrt command
+# start command
 @app.on_message(filters.command(["start"]))
 def echo(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     app.send_message(message.chat.id, '**Send link like this >> __/mdisk link__**',reply_to_message_id=message.id)
@@ -34,7 +34,7 @@ def status(folder,message):
         if os.path.exists(folder + "/vid.mp4.part-Frag0"):
             break
     
-    time.sleep(2)
+    time.sleep(3)
     while os.path.exists(folder + "/" ):
         result = subprocess.run(["du", "-hs", f"{folder}/"], capture_output=True, text=True)
         size = result.stdout[:-(length+2)]
@@ -52,7 +52,7 @@ def upstatus(statusfile,message):
         if os.path.exists(statusfile):
             break
 
-    time.sleep(2)      
+    time.sleep(3)      
     while os.path.exists(statusfile):
         with open(statusfile,"r") as upread:
             txt = upread.read()
@@ -76,7 +76,12 @@ def down(message,link):
     sta = threading.Thread(target=lambda:status(str(message.id),msg),daemon=True)
     sta.start()
 
-    file = mdisk.mdow(link,message)
+    file,check = mdisk.mdow(link,message)
+
+    if file == None:
+        app.edit_message_text(message.chat.id, msg.id,"__**Invalid Link**__")
+        return
+
     size = split.get_path_size(file)
 
     upsta = threading.Thread(target=lambda:upstatus(f'{message.id}upstatus.txt',msg),daemon=True)
@@ -109,7 +114,8 @@ def down(message,link):
         else:
             app.send_message(message.chat.id,"**Error in Merging File**",reply_to_message_id=message.id)
         
-
+    if check == 0:
+        app.send_message(message.chat.id,"__Can't remove the **restriction**, you have to use **MX player** to play this **video**\n\nThis happens because either the **file** length is **too small** or **video** doesn't have separate **audio layer**__",reply_to_message_id=message.id)
     os.remove(f'{message.id}upstatus.txt')
     app.delete_messages(message.chat.id,message_ids=[msg.id])
 
