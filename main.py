@@ -31,7 +31,7 @@ def status(folder,message):
     length = len(folder)
     # wait for the folder to create
     while True:
-        if os.path.exists(folder + "/vid.mp4.part-Frag0"):
+        if os.path.exists(folder + "/vid.mp4.part-Frag0") or os.path.exists(folder + "/vid.mp4.part"):
             break
     
     time.sleep(3)
