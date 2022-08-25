@@ -27,7 +27,7 @@
 
 # Deploy
 
-You can use the bot locally by running 'main.py' or deploy using Procfile, Dokerfile, docker-compose.yml
+*You can use the bot locally by either* **running main.py** or **deploy** using **Procfile** or **Dokerfile** or **docker-compose.yml**
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/D6ueVa?referralCode=_4oAwx)
 
