@@ -140,9 +140,18 @@ def mdow(link,message):
             shutil.rmtree(str(message.id))
             return ffoutput,1
     
-# threding audio download      
+# multi-threding audio download      
 def downaud(input_audio,audids,resp):
-    for ele in audids:
+	threadlist = []
+	for i in range(len(audids)):
+		threadlist.append(threading.Thread(target=lambda:downaudio(input_audio,audids[i],resp),daemon=True))
+		threadlist[i].start()   
+       	
+	for ele in threadlist:
+		ele.join()   	
+       	 
+# actual audio download      
+def downaudio(input_audio,ele,resp):             
         out_audio = input_audio + f'/aud-{ele}.m4a'
         subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
