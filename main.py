@@ -26,8 +26,9 @@ def echo(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 
 
 # download status
-def status(folder,message):
+def status(folder,message,fsize):
 
+    fsize = fsize / pow(2,20)
     length = len(folder)
     # wait for the folder to create
     while True:
@@ -39,7 +40,7 @@ def status(folder,message):
         result = subprocess.run(["du", "-hs", f"{folder}/"], capture_output=True, text=True)
         size = result.stdout[:-(length+2)]
         try:
-            app.edit_message_text(message.chat.id, message.id, f"__Downloaded__ : **{size}**")
+            app.edit_message_text(message.chat.id, message.id, f"__Downloaded__ : **{size} **__of__**  {fsize:.1f}M**")
             time.sleep(10)
         except:
             time.sleep(5)
@@ -73,17 +74,19 @@ def progress(current, total, message):
 def down(message,link):
 
     msg = app.send_message(message.chat.id, '__Downloading__', reply_to_message_id=message.id)
-    sta = threading.Thread(target=lambda:status(str(message.id),msg),daemon=True)
+    size = mdisk.getsize(link)
+    if size == 0:
+        app.edit_message_text(message.chat.id, msg.id,"__**Invalid Link**__")
+        return
+    sta = threading.Thread(target=lambda:status(str(message.id),msg,size),daemon=True)
     sta.start()
 
-    file,check = mdisk.mdow(link,message)
-
+    file,check,filename = mdisk.mdow(link,message)
     if file == None:
         app.edit_message_text(message.chat.id, msg.id,"__**Invalid Link**__")
         return
 
     size = split.get_path_size(file)
-
     upsta = threading.Thread(target=lambda:upstatus(f'{message.id}upstatus.txt',msg),daemon=True)
     upsta.start()
 
@@ -97,9 +100,9 @@ def down(message,link):
 
         for ele in flist:
             if not os.path.exists(f'{message.from_user.id}-thumb.jpg'):
-                app.send_document(message.chat.id,document=ele,caption=f"__**part {i}**__", reply_to_message_id=message.id, progress=progress, progress_args=[message])
+                app.send_document(message.chat.id,document=ele,caption=f"__**part {i}**__\n**{filename}**", reply_to_message_id=message.id, progress=progress, progress_args=[message])
             else:
-                app.send_document(message.chat.id,document=ele,caption=f"__**part {i}**__", thumb=f'{message.from_user.id}-thumb.jpg', reply_to_message_id=message.id, progress=progress, progress_args=[message])
+                app.send_document(message.chat.id,document=ele,caption=f"__**part {i}**__\n**{filename}**", thumb=f'{message.from_user.id}-thumb.jpg', reply_to_message_id=message.id, progress=progress, progress_args=[message])
             i = i + 1
             os.remove(ele)
     
@@ -107,9 +110,9 @@ def down(message,link):
         app.edit_message_text(message.chat.id, msg.id, "__Uploading __")
         if os.path.exists(file):
             if not os.path.exists(f'{message.from_user.id}-thumb.jpg'):
-                app.send_document(message.chat.id,document=file, reply_to_message_id=message.id, progress=progress, progress_args=[message])
+                app.send_document(message.chat.id,document=file, caption=f'**{filename}**', reply_to_message_id=message.id, progress=progress, progress_args=[message])
             else:
-                app.send_document(message.chat.id,document=file, thumb=f'{message.from_user.id}-thumb.jpg', reply_to_message_id=message.id, progress=progress, progress_args=[message])  
+                app.send_document(message.chat.id,document=file,  caption=f'**{filename}**', thumb=f'{message.from_user.id}-thumb.jpg', reply_to_message_id=message.id, progress=progress, progress_args=[message])  
             os.remove(file)
         else:
             app.send_message(message.chat.id,"**Error in Merging File**",reply_to_message_id=message.id)
