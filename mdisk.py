@@ -85,9 +85,10 @@ def mdow(link,message):
     print("Video Downloaded")
     # renaming
     output = requests.get(url=URL, headers=header).json()['filename']
-    filename = output
+    filename = output[:1000]
     output = output.replace(".mkv", "").replace(".mp4", "")
     output = "".join( x for x in output if (x.isalnum() or x in "._-@ "))
+    output = output[:200]
 
     # check if normal video
     if len(audids) == 0:
