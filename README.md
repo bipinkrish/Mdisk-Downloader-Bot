@@ -17,11 +17,15 @@
 # Usage
 
 ```
-/mdisk mdisklink
+/start - start message
+/help - list of commands
+/mdisk mdisklink - usage
 /thumb - reply to a image document of size less than 200KB to set it as Thumbnail
 ( you can also send image as a photo to set it as Thumbnail automatically )
 /remove - remove Thumbnail
 /show - show Thumbnail
+/change - change upload mode
+( default mode is Document )
 ```
 ---
 
