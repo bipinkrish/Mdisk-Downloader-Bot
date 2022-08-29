@@ -8,4 +8,4 @@ RUN pip3 install -r requirements.txt
 
 COPY . /app
 
-CMD ["bash","run.sh"]
+CMD python3 main.py

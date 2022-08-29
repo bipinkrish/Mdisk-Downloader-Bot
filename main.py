@@ -9,6 +9,7 @@ from pyrogram import filters
 
 import mdisk
 import extras
+import mediainfo
 import split
 from split import TG_SPLIT_SIZE
 
@@ -141,7 +142,10 @@ def down(message,link):
 
         # actuall upload
         if info == "V":
-                app.send_video(message.chat.id, video=ele, caption=f"{partt}**{filename}**", thumb=thumbfile, reply_to_message_id=message.id, progress=progress, progress_args=[message])
+                thumb,duration,width,height = mediainfo.allinfo(ele,thumbfile)
+                app.send_video(message.chat.id, video=ele, caption=f"{partt}**{filename}**", thumb=thumb, duration=duration, height=height, width=width, reply_to_message_id=message.id, progress=progress, progress_args=[message])
+                if "-thumb.jpg" not in thumb:
+                    os.remove(thumb)
         else:
                 app.send_document(message.chat.id, document=ele, caption=f"{partt}**{filename}**", thumb=thumbfile, force_document=True, reply_to_message_id=message.id, progress=progress, progress_args=[message])
         # deleting uploaded file
