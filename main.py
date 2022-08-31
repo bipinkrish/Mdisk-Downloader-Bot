@@ -33,12 +33,10 @@ def help(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
     helpmessage = """__**/start** - basic usage
 **/help** - this message
 **/mdisk mdisklink** - usage
-**/thumb** - reply to a image document of size less than 200KB to set it as Thumbnail
-( you can also send image as a photo to set it as Thumbnail automatically )
+**/thumb** - reply to a image document of size less than 200KB to set it as Thumbnail ( you can also send image as a photo to set it as Thumbnail automatically )
 **/remove** - remove Thumbnail
 **/show** - show Thumbnail
-**/change** - change upload mode
-( default mode is Document )__"""
+**/change** - change upload mode ( default mode is Document )__"""
     app.send_message(message.chat.id, helpmessage, reply_to_message_id=message.id)
 
 
@@ -148,6 +146,7 @@ def down(message,link):
                     os.remove(thumb)
         else:
                 app.send_document(message.chat.id, document=ele, caption=f"{partt}**{filename}**", thumb=thumbfile, force_document=True, reply_to_message_id=message.id, progress=progress, progress_args=[message])
+        
         # deleting uploaded file
         os.remove(ele)
         
@@ -165,11 +164,14 @@ def mdiskdown(client: pyrogram.client.Client, message: pyrogram.types.messages_a
     
     try:
         link = message.text.split("mdisk ")[1]
-        if "mdisk" in link:
+        if "https://mdisk.me/" in link:
             d = threading.Thread(target=lambda:down(message,link),daemon=True)
             d.start()
+            return 
     except:
-        app.send_message(message.chat.id, '**Send only __MDisk Link__ with command followed by the link**',reply_to_message_id=message.id)
+        pass
+
+    app.send_message(message.chat.id, '**Send only __MDisk Link__ with command followed by the link**',reply_to_message_id=message.id)
 
 
 # thumb command
@@ -228,6 +230,17 @@ def change(client: pyrogram.client.Client, message: pyrogram.types.messages_and_
         app.send_message(message.chat.id, '__Mode changed from **Document** format to **Video** format__',reply_to_message_id=message.id)
 
 
+# mdisk link in text
+@app.on_message(filters.text)
+def mdisktext(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+    
+    if "https://mdisk.me/" in message.text:
+        link = message.text    
+        d = threading.Thread(target=lambda:down(message,link),daemon=True)
+        d.start()
+    else:
+        app.send_message(message.chat.id, '**Send only __MDisk Link__**',reply_to_message_id=message.id)
+
+
 # polling
 app.run()
-
