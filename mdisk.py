@@ -65,7 +65,7 @@ def mdow(link,message):
     for line in Lines:
         line = line.strip()
         if "audio" in line:
-            audids.append(line[0])
+            audids.append(line.split(" ")[0])
             if "[" in line and "]" in line:
                 audname.append(line.split("[")[1].split("]")[0])
                 i = i + 1
@@ -73,7 +73,7 @@ def mdow(link,message):
                 audname.append(f"Track - {i}")
                 i = i + 1
         if "video" in line:
-            vid_format = line[0]
+            vid_format = line.split(" ")[0]
        
     # threding audio download   
     audi = threading.Thread(target=lambda:downaud(input_audio,audids,resp),daemon=True)
