@@ -31,10 +31,11 @@ header = {
 def mdow(link,message):
 
     #setting
-    os.mkdir(str(message.id))
-    input_video = dirPath + f'/{message.id}/vid.mp4'
-    input_audio = dirPath + f'/{message.id}' 
-
+    fldname = link.split("/")[-1]
+    os.mkdir(str(fldname))
+    input_video = dirPath + f'/{fldname}/vid.mp4'
+    input_audio = dirPath + f'/{fldname}'
+   
     #input
     inp = link 
     fxl = inp.split("/")
@@ -45,18 +46,18 @@ def mdow(link,message):
     try:
         resp = requests.get(url=URL, headers=header).json()['source']
     except:
-        shutil.rmtree(str(message.id))
+        shutil.rmtree(str(fldname))
         return None,None,None
     result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
-    with open(f"{message.id}.txt","w") as temp:
+    with open(f'{fldname}.txt',"w") as temp:
         temp.write(result.stdout)
-    os.system(f"sed -i 1,6d {message.id}.txt")
+    os.system(f'sed -i 1,6d {fldname}.txt')
 
     # getting ids
-    with open(f"{message.id}.txt", 'r') as file1:
+    with open(f"{fldname}.txt", 'r') as file1:
         Lines = file1.readlines()
     
-    os.remove(f"{message.id}.txt")
+    os.remove(f"{fldname}.txt")
     audids = []
     audname = []
     i = 1
@@ -65,7 +66,7 @@ def mdow(link,message):
     for line in Lines:
         line = line.strip()
         if "audio" in line:
-            audids.append(line.split(" ")[0])
+            audids.append(line[0])
             if "[" in line and "]" in line:
                 audname.append(line.split("[")[1].split("]")[0])
                 i = i + 1
@@ -73,7 +74,7 @@ def mdow(link,message):
                 audname.append(f"Track - {i}")
                 i = i + 1
         if "video" in line:
-            vid_format = line.split(" ")[0]
+            vid_format = line[0]
        
     # threding audio download   
     audi = threading.Thread(target=lambda:downaud(input_audio,audids,resp),daemon=True)
@@ -95,7 +96,7 @@ def mdow(link,message):
     if len(audids) == 0:
         foutput = f"{output}.mkv"
         os.rename(input_video,foutput)
-        shutil.rmtree(str(message.id))
+        shutil.rmtree(str(fldname))
         return foutput,0,filename
 
     # merge
@@ -127,7 +128,7 @@ def mdow(link,message):
     # cleaning
     if os.path.exists(output+'.mkv'):
         print('Cleaning Leftovers...')
-        shutil.rmtree(str(message.id))
+        shutil.rmtree(str(fldname))
         foutput = f"{output}.mkv"
         return foutput,1,filename
 
@@ -141,7 +142,7 @@ def mdow(link,message):
         if os.path.exists(output+'.mkv'):
             print('Cleaning Leftovers...')
             
-            shutil.rmtree(str(message.id))
+            shutil.rmtree(str(fldname))
             return ffoutput,1,filename
     
 # multi-threding audio download      

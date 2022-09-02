@@ -1,5 +1,2 @@
-pyrogram 
-tgcrypto
+ttbotapi
 requests
-Pillow
-
