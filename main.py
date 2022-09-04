@@ -230,15 +230,27 @@ def change(client: pyrogram.client.Client, message: pyrogram.types.messages_and_
     else:
         app.send_message(message.chat.id, '__Mode changed from **Document** format to **Video** format__',reply_to_message_id=message.id)
 
+        
+# multiple links handler
+def multilinks(message,links):
+    for link in links:
+        d = threading.Thread(target=lambda:down(message,link),daemon=True)
+        d.start()
+        d.join()
+
 
 # mdisk link in text
 @app.on_message(filters.text)
 def mdisktext(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     
     if "https://mdisk.me/" in message.text:
-        link = message.text    
-        d = threading.Thread(target=lambda:down(message,link),daemon=True)
-        d.start()
+        links = message.text.split("\n")
+        if len(links) == 1:
+            d = threading.Thread(target=lambda:down(message,links[0]),daemon=True)
+            d.start()
+        else:
+            d = threading.Thread(target=lambda:multilinks(message,links),daemon=True)
+            d.start()   
     else:
         app.send_message(message.chat.id, '**Send only __MDisk Link__**',reply_to_message_id=message.id)
 
