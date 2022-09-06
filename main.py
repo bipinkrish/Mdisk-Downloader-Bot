@@ -22,15 +22,30 @@ api_id = os.environ.get("ID", "")
 app = Client("my_bot",api_id=api_id, api_hash=api_hash,bot_token=bot_token)
 
 
+# optionals
+auth = os.environ.get("AUTH", "")
+ban = os.environ.get("BAN", "")
+
+
 # start command
 @app.on_message(filters.command(["start"]))
 def echo(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id,reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("📦 Source Code", url="https://github.com/bipinkrish/Mdisk-Downloader-Bot")]]))
+        return
+
     app.send_message(message.chat.id, '**Hi, I am Mdisk Video Downloader, you can watch Videos without MX Player.\n__Send me a link to Start...__**',reply_to_message_id=message.id,
     reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("📦 Source Code", url="https://github.com/bipinkrish/Mdisk-Downloader-Bot")]]))
 
 # help command
 @app.on_message(filters.command(["help"]))
 def help(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+    
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+    
     helpmessage = """__**/start** - basic usage
 **/help** - this message
 **/mdisk mdisklink** - usage
@@ -39,6 +54,23 @@ def help(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 **/show** - show Thumbnail
 **/change** - change upload mode ( default mode is Document )__"""
     app.send_message(message.chat.id, helpmessage, reply_to_message_id=message.id)
+
+
+# check for user access
+def checkuser(message):
+    if auth != "" or ban != "":
+        valid = 1
+        if auth != "":
+            authusers = auth.split(",")
+            if str(message.from_user.id) not in authusers:
+                valid = 0
+        if ban != "":
+            bannedusers = ban.split(",")
+            if str(message.from_user.id) in bannedusers:
+                valid = 0
+        return valid        
+    else:
+        return 1
 
 
 # download status
@@ -163,6 +195,10 @@ def down(message,link):
 @app.on_message(filters.command(["mdisk"]))
 def mdiskdown(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+
     try:
         link = message.text.split("mdisk ")[1]
         if "https://mdisk.me/" in link:
@@ -179,6 +215,10 @@ def mdiskdown(client: pyrogram.client.Client, message: pyrogram.types.messages_a
 @app.on_message(filters.command(["thumb"]))
 def thumb(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+
     try:
         if int(message.reply_to_message.document.file_size) > 200000:
             app.send_message(message.chat.id, '**Thumbline size allowed is < 200 KB**',reply_to_message_id=message.id)
@@ -196,6 +236,11 @@ def thumb(client: pyrogram.client.Client, message: pyrogram.types.messages_and_m
 # show thumb command
 @app.on_message(filters.command(["show"]))
 def showthumb(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+    
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+    
     if os.path.exists(f'{message.from_user.id}-thumb.jpg'):
         app.send_photo(message.chat.id,photo=f'{message.from_user.id}-thumb.jpg',reply_to_message_id=message.id)
     else:
@@ -205,6 +250,12 @@ def showthumb(client: pyrogram.client.Client, message: pyrogram.types.messages_a
 # remove thumbline command
 @app.on_message(filters.command(["remove"]))
 def removethumb(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+    
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+    
+    
     if os.path.exists(f'{message.from_user.id}-thumb.jpg'):
         os.remove(f'{message.from_user.id}-thumb.jpg')
         app.send_message(message.chat.id, '**Thumbnail is Removed**',reply_to_message_id=message.id)
@@ -215,6 +266,11 @@ def removethumb(client: pyrogram.client.Client, message: pyrogram.types.messages
 # thumbline
 @app.on_message(filters.photo)
 def ptumb(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+    
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+    
     file = app.download_media(message)
     os.rename(file,f'{message.from_user.id}-thumb.jpg')
     app.send_message(message.chat.id, '**Thumbnail is Set**',reply_to_message_id=message.id)
@@ -223,6 +279,11 @@ def ptumb(client: pyrogram.client.Client, message: pyrogram.types.messages_and_m
 # change mode
 @app.on_message(filters.command(["change"]))
 def change(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+    
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+    
     info = extras.getdata(str(message.from_user.id))
     extras.swap(str(message.from_user.id))
     if info == "V":
@@ -243,6 +304,10 @@ def multilinks(message,links):
 @app.on_message(filters.text)
 def mdisktext(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     
+    if not checkuser(message):
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+
     if "https://mdisk.me/" in message.text:
         links = message.text.split("\n")
         if len(links) == 1:
