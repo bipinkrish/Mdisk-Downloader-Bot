@@ -12,7 +12,7 @@ dirPath = os.path.dirname(realPath)
 dirName = os.path.basename(dirPath)
 
 # is Windows ?
-iswin = api_id = os.environ.get("WIN", "0")
+iswin = os.environ.get("WIN", "0")
 
 # binary setting
 if iswin == "0":
