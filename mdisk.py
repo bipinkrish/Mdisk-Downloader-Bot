@@ -10,13 +10,30 @@ currentFile = __file__
 realPath = os.path.realpath(currentFile)
 dirPath = os.path.dirname(realPath)
 dirName = os.path.basename(dirPath)
-ytdlp = dirPath + "/binaries/yt-dlp"
-aria2c = dirPath + "/binaries/aria2c"
-ffmpeg = dirPath + "/ffmpeg/ffmpeg"
-ffprobe = dirPath + "/ffmpeg/ffprobe"
 
-# changing permission
-os.system(f"chmod 777 {ytdlp} {aria2c} {ffmpeg} {ffprobe} ffmpeg/qt-faststart")
+# is Windows ?
+iswin = api_id = os.environ.get("WIN", "0")
+
+# binary setting
+if iswin == "0":
+    ytdlp = dirPath + "/binaries/yt-dlp"
+    aria2c = dirPath + "/binaries/aria2c"
+    ffmpeg = dirPath + "/ffmpeg/ffmpeg"
+    ffprobe = dirPath + "/ffmpeg/ffprobe"
+    os.system(f"chmod 777 {ytdlp} {aria2c} {ffmpeg} {ffprobe} ffmpeg/qt-faststart")
+else:
+    if os.path.exists("ffmpeg/ffprobe.zip"):
+        os.system("unzip ffmpeg/ffprobe.zip -d ffmpeg/")
+        os.remove("ffmpeg/ffprobe.zip")
+    if os.path.exists("ffmpeg/ffmpeg.zip"):
+        os.system("unzip ffmpeg/ffmpeg.zip -d ffmpeg/")
+        os.remove("ffmpeg/ffmpeg.zip")
+    
+    ytdlp = dirPath + "/binaries/yt-dlp.exe"
+    aria2c = dirPath + "/binaries/aria2c.exe"
+    ffmpeg = dirPath + "/ffmpeg/ffmpeg.exe"
+    ffprobe = dirPath + "/ffmpeg/ffprobe.exe"
+
 
 # header for request
 header = {
@@ -171,4 +188,5 @@ def getsize(link):
         return size
     except:
         return 0
+
 
