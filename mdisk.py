@@ -110,7 +110,7 @@ def mdow(link,message):
     output = requests.get(url=URL, headers=header).json()['filename']
     filename = output[:1000]
     output = output.replace(".mkv", "").replace(".mp4", "")
-    output = "".join( x for x in output if (x.isalnum() or x in "._-@ "))
+    output = "".join( x for x in output if (x.isalnum() or x in "_ "))
     output = output[:200]
 
     # check if normal video
@@ -144,7 +144,6 @@ def mdow(link,message):
     cmd = cmd + f'-c copy "{output}.mkv"'
     print(cmd)
     subprocess.call(cmd, shell=True)                        
-    print('Muxing Done')
 
     # cleaning
     if os.path.exists(output+'.mkv'):
@@ -158,14 +157,14 @@ def mdow(link,message):
         ffoutput = f" {output}.mkv"
         cmd = f'{tcmd} -c copy "{ffoutput}"'
         subprocess.call(cmd, shell=True)
-        print('Muxing Done')
         
         if os.path.exists(output+'.mkv'):
             print('Cleaning Leftovers...')
             
             shutil.rmtree(str(message.id))
             return ffoutput,1,filename
-    
+
+
 # multi-threding audio download      
 def downaud(input_audio,audids,resp):
     threadlist = []
@@ -178,11 +177,13 @@ def downaud(input_audio,audids,resp):
     
     print("Audio Downloaded")
     
+
 # actual audio download
 def downaudio(input_audio,ele,resp):             
         out_audio = input_audio + f'/aud-{ele}.m4a'
         subprocess.run([ytdlp, '--no-warning', '-k', '-f', ele, resp, '-o', out_audio, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
+
 
 # getting size
 def getsize(link):
@@ -195,5 +196,3 @@ def getsize(link):
         return size
     except:
         return 0
-
-
