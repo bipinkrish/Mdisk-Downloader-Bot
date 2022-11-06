@@ -21,16 +21,20 @@ if iswin == "0":
     ffmpeg = dirPath + "/ffmpeg/ffmpeg"
     ffprobe = dirPath + "/ffmpeg/ffprobe"
     os.system(f"chmod 777 {ytdlp} {aria2c} {ffmpeg} {ffprobe} ffmpeg/qt-faststart")
-else:
-    if os.path.exists("ffmpeg/ffprobe.zip"):
-        os.system("unzip ffmpeg/ffprobe.zip -d ffmpeg/")
-        os.remove("ffmpeg/ffprobe.zip")
-    if os.path.exists("ffmpeg/ffmpeg.zip"):
-        os.system("unzip ffmpeg/ffmpeg.zip -d ffmpeg/")
-        os.remove("ffmpeg/ffmpeg.zip")
     
+else:
     ytdlp = dirPath + "/binaries/yt-dlp.exe"
     aria2c = dirPath + "/binaries/aria2c.exe"
+
+    if not os.path.exists("ffmpeg/ffmpeg.exe"):
+        print("Downloading FFmpeg.exe")
+        os.system(aria2c + " -o ffmpeg/ffmpeg.exe https://github.com/bipinkrish/Mdisk-Downloader-Bot/releases/download/v1.0/ffmpeg.exe")
+        print("Downloaded FFmpeg")
+    if not os.path.exists("ffmpeg/ffprobe.exe"):
+        print("Downloading FFprobe")
+        os.system(aria2c + " -o ffmpeg/ffprobe.exe https://github.com/bipinkrish/Mdisk-Downloader-Bot/releases/download/v1.0/ffprobe.exe")
+        print("Downloaded FFprobe")
+    
     ffmpeg = dirPath + "/ffmpeg/ffmpeg.exe"
     ffprobe = dirPath + "/ffmpeg/ffprobe.exe"
 
