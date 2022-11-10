@@ -4,6 +4,8 @@ import os
 import subprocess
 import threading
 import shutil
+import zipfile
+
 
 # setting
 currentFile = __file__
@@ -20,23 +22,38 @@ if iswin == "0":
     aria2c = dirPath + "/binaries/aria2c"
     ffmpeg = dirPath + "/ffmpeg/ffmpeg"
     ffprobe = dirPath + "/ffmpeg/ffprobe"
+    ffmpeg_Lzip = dirPath + "/ffmpeg/ffmpeg_L.zip"
+    ffprobe_Lzip = dirPath + "/ffmpeg/ffprobe_L.zip"
+
+    if not os.path.exists(ffmpeg):
+        with zipfile.ZipFile(ffmpeg_Lzip,"r") as zip_ref:
+            zip_ref.extractall("ffmpeg")
+        os.remove(ffmpeg_Lzip)
+    if not os.path.exists(ffprobe):
+        with zipfile.ZipFile(ffprobe_Lzip,"r") as zip_ref:
+            zip_ref.extractall("ffmpeg")
+        os.remove(ffprobe_Lzip)
+
     os.system(f"chmod 777 {ytdlp} {aria2c} {ffmpeg} {ffprobe} ffmpeg/qt-faststart")
     
 else:
+
     ytdlp = dirPath + "/binaries/yt-dlp.exe"
     aria2c = dirPath + "/binaries/aria2c.exe"
-
-    if not os.path.exists("ffmpeg/ffmpeg.exe"):
-        print("Downloading FFmpeg.exe")
-        os.system(aria2c + " -o ffmpeg/ffmpeg.exe https://github.com/bipinkrish/Mdisk-Downloader-Bot/releases/download/v1.0/ffmpeg.exe")
-        print("Downloaded FFmpeg")
-    if not os.path.exists("ffmpeg/ffprobe.exe"):
-        print("Downloading FFprobe")
-        os.system(aria2c + " -o ffmpeg/ffprobe.exe https://github.com/bipinkrish/Mdisk-Downloader-Bot/releases/download/v1.0/ffprobe.exe")
-        print("Downloaded FFprobe")
-    
     ffmpeg = dirPath + "/ffmpeg/ffmpeg.exe"
     ffprobe = dirPath + "/ffmpeg/ffprobe.exe"
+    ffmpeg_Wzip = dirPath + "/ffmpeg/ffmpeg.zip"
+    ffprobe_Wzip = dirPath + "/ffmpeg/ffprobe.zip"
+
+    if not os.path.exists(ffmpeg):
+        with zipfile.ZipFile(ffmpeg_Wzip,"r") as zip_ref:
+            zip_ref.extractall("ffmpeg")
+        os.remove(ffmpeg_Wzip)
+    if not os.path.exists(ffprobe):
+        with zipfile.ZipFile(ffprobe_Wzip,"r") as zip_ref:
+            zip_ref.extractall("ffmpeg")
+        os.remove(ffprobe_Wzip)
+    
 
 
 # header for request
