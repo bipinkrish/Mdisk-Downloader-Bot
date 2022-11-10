@@ -6,7 +6,6 @@ import threading
 import shutil
 import zipfile
 
-
 # setting
 currentFile = __file__
 realPath = os.path.realpath(currentFile)
