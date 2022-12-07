@@ -87,7 +87,7 @@ def mdow(link,message):
     result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
     with open(f"{message.id}.txt","w") as temp:
         temp.write(result.stdout)
-    os.system(f"sed -i 1,6d {message.id}.txt")
+    if iswin == "0": os.system(f"sed -i 1,6d {message.id}.txt")
 
     # getting ids
     with open(f"{message.id}.txt", 'r') as file1:

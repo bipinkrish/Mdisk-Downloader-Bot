@@ -19,20 +19,23 @@ from split import TG_SPLIT_SIZE
 bot_token = os.environ.get("TOKEN", "") 
 api_hash = os.environ.get("HASH", "") 
 api_id = os.environ.get("ID", "")
-app = Client("my_bot",api_id=api_id, api_hash=api_hash,bot_token=bot_token)
+app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
+# preiumum
+from split import ss, temp_channel, isPremmium
+if isPremmium: acc = Client("myacc", api_id=api_id, api_hash=api_hash, session_string=ss)
 
 # optionals
 auth = os.environ.get("AUTH", "")
 ban = os.environ.get("BAN", "")
-
+from mdisk import iswin
 
 # start command
 @app.on_message(filters.command(["start"]))
 def echo(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
 
     if not checkuser(message):
-        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id,reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("📦 Source Code", url="https://github.com/bipinkrish/Mdisk-Downloader-Bot")]]))
+        app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__', reply_to_message_id=message.id,reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("📦 Source Code", url="https://github.com/bipinkrish/Mdisk-Downloader-Bot")]]))
         return
 
     app.send_message(message.chat.id, '**Hi, I am Mdisk Video Downloader, you can watch Videos without MX Player.\n__Send me a link to Start...__**',reply_to_message_id=message.id,
@@ -84,13 +87,20 @@ def status(folder,message,fsize):
     
     time.sleep(3)
     while os.path.exists(folder + "/" ):
-        result = subprocess.run(["du", "-hs", f"{folder}/"], capture_output=True, text=True)
-        size = result.stdout[:-(length+2)]
+        if iswin == "0":
+            result = subprocess.run(["du", "-hs", f"{folder}/"], capture_output=True, text=True)
+            size = result.stdout[:-(length+2)]
+        else:
+            os.system(f"dir /a/s {folder} > tempS-{message.id}.txt")
+            size = str(int(open(f"tempS-{message.id}.txt","r").readlines()[-2].split()[2].replace(",","")) // 1000000) + "MB "
+
         try:
             app.edit_message_text(message.chat.id, message.id, f"__Downloaded__ : **{size} **__of__**  {fsize:.1f}M**")
             time.sleep(10)
         except:
             time.sleep(5)
+
+    if iswin != "0": os.remove(f"tempS-{message.id}.txt")
 
 
 # upload status
@@ -179,13 +189,18 @@ def down(message,link):
 
         # actuall upload
         if info == "V":
-                thumb,duration,width,height = mediainfo.allinfo(ele,thumbfile)
-                app.send_video(message.chat.id, video=ele, caption=f"{partt}**{filename}**", thumb=thumb, duration=duration, height=height, width=width, reply_to_message_id=message.id, progress=progress, progress_args=[message])
-                if "-thumb.jpg" not in thumb:
-                    os.remove(thumb)
+            thumb,duration,width,height = mediainfo.allinfo(ele,thumbfile)
+            if not isPremmium : app.send_video(message.chat.id, video=ele, caption=f"{partt}**{filename}**", thumb=thumb, duration=duration, height=height, width=width, reply_to_message_id=message.id, progress=progress, progress_args=[message])
+            else:
+                with acc: tmsg = acc.send_video(temp_channel, video=ele, caption=f"{partt}**{filename}**", thumb=thumb, duration=duration, height=height, width=width, progress=progress, progress_args=[message])
+                app.copy_message(message.chat.id, temp_channel, tmsg.id, reply_to_message_id=message.id)
+            if "-thumb.jpg" not in thumb: os.remove(thumb)
         else:
-                app.send_document(message.chat.id, document=ele, caption=f"{partt}**{filename}**", thumb=thumbfile, force_document=True, reply_to_message_id=message.id, progress=progress, progress_args=[message])
-        
+            if not isPremmium : app.send_document(message.chat.id, document=ele, caption=f"{partt}**{filename}**", thumb=thumbfile, force_document=True, reply_to_message_id=message.id, progress=progress, progress_args=[message])
+            else:
+                with acc: tmsg = acc.send_document(temp_channel, document=ele, thumb=thumbfile, caption=f"{partt}**{filename}**", force_document=True, progress=progress, progress_args=[message])
+                app.copy_message(message.chat.id, temp_channel, tmsg.id, reply_to_message_id=message.id)
+       
         # deleting uploaded file
         os.remove(ele)
         
@@ -310,8 +325,14 @@ def multilinks(message,links):
 @app.on_message(filters.text)
 def mdisktext(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     
+    if isPremmium and message.chat.id == temp_channel: return
+
     if not checkuser(message):
         app.send_message(message.chat.id, '__You are either not **Authorized** or **Banned**__',reply_to_message_id=message.id)
+        return
+
+    if message.text[0] == "/":
+        app.send_message(message.chat.id, '**See __/help__**',reply_to_message_id=message.id)
         return
 
     if "https://mdisk.me/" in message.text:

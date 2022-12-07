@@ -2,10 +2,25 @@ from os import remove as osremove, path as ospath, walk
 from json import loads as jsnloads
 from subprocess import run as srun, check_output
 from math import ceil
+import os
+
+# premium account
+temp_channel = os.environ.get("TEMP_CHAT", "")
+try: temp_channel = int(temp_channel)
+except: pass
+ss = os.environ.get("STRING", "")
+if ss != "" and temp_channel != "": isPremmium = True
+else: isPremmium = False
+
+if isPremmium:
+    TG_SPLIT_SIZE = 2097151000 * 2
+    checksize = 2097152000 * 2
+else:
+    TG_SPLIT_SIZE = 2097151000
+    checksize = 2097152000
 
 VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
-TG_SPLIT_SIZE = 2097151000
-EQUAL_SPLITS = False
+
 
 def get_media_info(path):
     try:
@@ -39,11 +54,9 @@ def get_path_size(path: str):
             total_size += ospath.getsize(abs_path)
     return total_size    
 
-def split_file(path, size, file_, dirpath, split_size, start_time=0, i=1, inLoop=False):
+def split_file(path, size, file_, dirpath, split_size, start_time=0, i=1):
     parts = ceil(size/TG_SPLIT_SIZE)
     flist = []
-    if EQUAL_SPLITS and not inLoop:
-        split_size = ceil(size/parts) + 1000
     if file_.upper().endswith(VIDEO_SUFFIXES):
         base_name, extension = ospath.splitext(file_)
         split_size = split_size - 2500000
@@ -54,11 +67,11 @@ def split_file(path, size, file_, dirpath, split_size, start_time=0, i=1, inLoop
                             path, "-ss", str(start_time), "-fs", str(split_size),
                             "-async", "1", "-strict", "-2", "-c", "copy", out_path])
             out_size = get_path_size(out_path)
-            if out_size > 2097152000:
-                dif = out_size - 2097152000
+            if out_size > checksize:
+                dif = out_size - checksize
                 split_size = split_size - dif + 2500000
                 osremove(out_path)
-                return split_file(path, size, file_, dirpath, split_size, start_time, i, inLoop=True)
+                return split_file(path, size, file_, dirpath, split_size, start_time, i)
             lpd = get_media_info(out_path)[0]
             if lpd <= 4 or out_size < 1000000:
                 osremove(out_path)

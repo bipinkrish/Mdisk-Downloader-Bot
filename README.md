@@ -16,6 +16,11 @@
 - `AUTH` List of Authenticated User's ID seperated by comma (,)
 - `BAN` List of Banned User's ID seperated by comma (,)
 
+#### Premium Features (upto 4 GB Files) (Only use this if you have Premium Account)
+
+- `STRING` Premium User String Session
+- `TEMP_CHAT` Username or ID of Chat (Channel or Group, Private, Public), both User account and Bot should have access to messages in that chat (basically a log chat but required not optional)
+
 ---
 
 # Usage
