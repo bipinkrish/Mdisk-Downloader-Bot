@@ -16,9 +16,9 @@ from split import TG_SPLIT_SIZE
 
 
 # app
-bot_token = os.environ.get("TOKEN", "") 
-api_hash = os.environ.get("HASH", "") 
-api_id = os.environ.get("ID", "")
+bot_token = os.environ.get("TOKEN", "5903420878:AAHamqwGZ464ZIp2swskx-XvTLuzPFv3A7w") 
+api_hash = os.environ.get("HASH", "409da5b68ad699091fa72b381921f0e5") 
+api_id = os.environ.get("ID", "15236804")
 app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 # preiumum
@@ -26,7 +26,7 @@ from split import ss, temp_channel, isPremmium
 if isPremmium: acc = Client("myacc", api_id=api_id, api_hash=api_hash, session_string=ss)
 
 # optionals
-auth = os.environ.get("AUTH", "")
+auth = os.environ.get("AUTH", "1963114305")
 ban = os.environ.get("BAN", "")
 from mdisk import iswin
 
@@ -39,7 +39,7 @@ def echo(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
         return
 
     app.send_message(message.chat.id, '**Hi, I am Mdisk Video Downloader, you can watch Videos without MX Player.\n__Send me a link to Start...__**',reply_to_message_id=message.id,
-    reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("📦 Source Code", url="https://github.com/bipinkrish/Mdisk-Downloader-Bot")]]))
+    reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("📦 Source Code", url="https://t.me/Matiz_Techz")]]))
 
 # help command
 @app.on_message(filters.command(["help"]))
