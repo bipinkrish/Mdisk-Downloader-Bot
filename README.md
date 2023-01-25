@@ -4,13 +4,15 @@
 
 ---
 
-## Variables
+# Variables
+
+#### Required
 
 - `HASH` Your API Hash from my.telegram.org
 - `ID` Your API ID from my.telegram.org
 - `TOKEN` Your bot token from @BotFather
 
-### Optionals ( if it's empty then everyone can use the bot )
+#### Optionals (everyone can use the bot if it is empty)
 
 - `WIN` Set to 1 to use Windows version, defaults to 0 which is for Linux version
 - `AUTH` List of Authenticated User's ID seperated by comma (,)
