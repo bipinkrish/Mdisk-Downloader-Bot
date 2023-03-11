@@ -14,7 +14,6 @@
 
 #### Optionals (everyone can use the bot if it is empty)
 
-- `WIN` Set to 1 to use Windows version, defaults to 0 which is for Linux version
 - `AUTH` List of Authenticated User's ID seperated by comma (,)
 - `BAN` List of Banned User's ID seperated by comma (,)
 
