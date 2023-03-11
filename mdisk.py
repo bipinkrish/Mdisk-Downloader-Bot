@@ -13,7 +13,8 @@ dirPath = os.path.dirname(realPath)
 dirName = os.path.basename(dirPath)
 
 # is Windows ?
-iswin = os.name == 'nt'
+if os.name == 'nt': iswin = "1"
+else: iswin =  "0"
 
 # binary setting
 if iswin == "0":
