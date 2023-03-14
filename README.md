@@ -2,8 +2,6 @@
 
 *A Telegram MDisk Video Downloader Bot, You can watch downloaded Videos without MX player (bypass mdisk requirements)*
 
-Experience the bot [@DownloadMdiskVideoBot](https://t.me/DownloadMdiskVideoBot)
-
 ---
 
 # Variables
