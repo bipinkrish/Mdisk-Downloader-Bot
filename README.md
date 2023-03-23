@@ -55,7 +55,7 @@ auth - Auth a user
 unauth - UnAuth a user
 ban - Ban a user
 unban - UnBan a user
-memebers - see the list of Owners,Auths,Bans
+members - see the list of Owners,Auths,Bans
 ```
 
 ---

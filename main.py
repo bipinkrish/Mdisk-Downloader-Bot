@@ -320,7 +320,7 @@ def ban(client: pyrogram.client.Client, message: pyrogram.types.messages_and_med
 
 # members command
 @app.on_message(filters.command(["members"]))
-def memebers(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+def members(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
     
     if not isowner(message):
         app.send_message(message.chat.id, '__You are not a Owner__', reply_to_message_id=message.id)
