@@ -3,21 +3,25 @@ from json import loads as jsnloads
 from subprocess import run as srun, check_output
 from math import ceil
 import os
+import json
+
+# conifg
+with open('config.json', 'r') as f: data = json.load(f)
 
 # premium account
-temp_channel = os.environ.get("TEMP_CHAT", "")
+temp_channel = os.environ.get("TEMP_CHAT") or data.get("TEMP_CHAT", "")
 try: temp_channel = int(temp_channel)
 except: pass
-ss = os.environ.get("STRING", "")
+ss = os.environ.get("STRING") or data.get("STRING", "")
 if ss != "" and temp_channel != "": isPremmium = True
 else: isPremmium = False
 
+TG_SPLIT_SIZE = 2097151000
+checksize = 2097152000
 if isPremmium:
-    TG_SPLIT_SIZE = 2097151000 * 2
-    checksize = 2097152000 * 2
-else:
-    TG_SPLIT_SIZE = 2097151000
-    checksize = 2097152000
+    TG_SPLIT_SIZE *= 2
+    checksize *= 2
+
 
 VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
 
@@ -85,6 +89,3 @@ def split_file(path, size, file_, dirpath, split_size, start_time=0, i=1):
         flist.append(out_path)
     print(flist)   
     return flist 
-    
-
-

@@ -66,26 +66,14 @@ header = {
     	 }
 
 # actual function
-def mdow(link,message):
+def mdow(allinfo,message):
 
     #setting
     os.mkdir(str(message.id))
     input_video = dirPath + f'/{message.id}/vid.mp4'
     input_audio = dirPath + f'/{message.id}' 
-
-    #input
-    inp = link 
-    fxl = inp.split("/")
-    cid = fxl[-1]
-
-    # resp capturing
-    URL = f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={cid}'
-    try:
-        resp = requests.get(url=URL, headers=header).json()['source']
-    except:
-        shutil.rmtree(str(message.id))
-        return None,None,None
-    result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', resp], capture_output=True, text=True)
+        
+    result = subprocess.run([ytdlp, '--no-warning', '-k', '--user-agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', '--allow-unplayable-formats', '-F', allinfo["source"]], capture_output=True, text=True)
     with open(f"{message.id}.txt","w") as temp:
         temp.write(result.stdout)
     if iswin == "0": os.system(f"sed -i 1,6d {message.id}.txt")
@@ -114,21 +102,21 @@ def mdow(link,message):
             vid_format = line.split(" ")[0]
        
     # threding audio download   
-    audi = threading.Thread(target=lambda:downaud(input_audio,audids,resp),daemon=True)
+    audi = threading.Thread(target=lambda:downaud(input_audio,audids,allinfo["source"]),daemon=True)
     audi.start()    
 
     # video download
-    subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, resp, '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+    subprocess.run([ytdlp, '--no-warning', '-k', '-f', vid_format, allinfo["source"], '-o', input_video, '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
     
     # check if video downloaded
     if not os.path.exists(input_video):
         print("Video Not Downloaded")
-        return resp,-1,None
+        return allinfo["source"],-1,None
     print("Video Downloaded")
     
     # renaming
-    output = requests.get(url=URL, headers=header).json()['filename']
+    output = allinfo['filename']
     filename = output[:1000]
     output = output.replace(".mkv", "").replace(".mp4", "")
     output = "".join( x for x in output if (x.isalnum() or x in "_ "))
@@ -143,7 +131,7 @@ def mdow(link,message):
 
     # merge
     audi.join()
-    cmd = f'{ffmpeg} -i "{input_video}" '
+    cmd = f'{ffmpeg} -y -i "{input_video}" '
 
     leng = 0
     for ele in audids:
@@ -161,13 +149,18 @@ def mdow(link,message):
     for ele in audname:
         cmd = cmd + f'-metadata:s:a:{i} language="{ele}" '
 
+    return cmd,output,filename
+
+
+def merge(message,cmd,output,filename):
+
     tcmd = cmd    
     cmd = cmd + f'-c copy "{output}.mkv"'
     print(cmd)
     subprocess.call(cmd, shell=True)                        
 
     # cleaning
-    if os.path.exists(output+'.mkv'):
+    if os.path.exists(output + '.mkv'):
         print('Cleaning Leftovers...')
         shutil.rmtree(str(message.id))
         foutput = f"{output}.mkv"
@@ -206,14 +199,8 @@ def downaudio(input_audio,ele,resp):
                    '--allow-unplayable-formats', '--external-downloader', aria2c, '--external-downloader-args', '-x 16 -s 16 -k 1M'])
 
 
-# getting size
-def getsize(link):
-    inp = link
-    fxl = inp.split("/")
-    cid = fxl[-1]
-    URL = f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={cid}'
-    try:
-        size = requests.get(url=URL, headers=header).json()["size"]
-        return size
-    except:
-        return 0
+# getting info
+def getinfo(link):
+    URL = f'https://diskuploader.entertainvideo.com/v1/file/cdnurl?param={link.split("/")[-1]}'
+    try: return requests.get(url=URL, headers=header).json()
+    except: return {}

@@ -57,4 +57,3 @@ def allinfo(file,thumb=None):
         height = 320
 
     return thumb,duration,width,height
-

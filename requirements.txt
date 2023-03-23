@@ -2,4 +2,3 @@ pyrogram
 tgcrypto
 requests
 Pillow
-
